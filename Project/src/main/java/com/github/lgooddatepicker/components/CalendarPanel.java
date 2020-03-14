@@ -41,6 +41,39 @@ import com.github.lgooddatepicker.zinternaltools.YearMonthChangeEvent;
  * that the date picker popup is closed.
  */
 public class CalendarPanel extends JPanel {
+	
+	private class Tag{
+		private LocalDate tag;
+		private LocalTime Zeit_1;
+		private LocalTime Zeit_2;
+
+		public Tag(LocalDate tag, LocalTime zeit_1, LocalTime zeit_2) {
+			super();
+			this.tag = tag;
+			Zeit_1 = zeit_1;
+			Zeit_2 = zeit_2;
+		}
+		public LocalDate getTag() {
+			return tag;
+		}
+		public void setTag(LocalDate tag) {
+			this.tag = tag;
+		}
+		public LocalTime getZeit_1() {
+			return Zeit_1;
+		}
+		public void setZeit_1(LocalTime zeit_1) {
+			Zeit_1 = zeit_1;
+		}
+		public LocalTime getZeit_2() {
+			return Zeit_2;
+		}
+		public void setZeit_2(LocalTime zeit_2) {
+			Zeit_2 = zeit_2;
+		}
+	}
+	
+	private HashMap<LocalDate,Tag> selectedDates = new HashMap<>();
 
     /**
      * dateLabels, This holds a list of all the date labels in the calendar, including ones that
@@ -522,6 +555,19 @@ public class CalendarPanel extends JPanel {
         LocalDate clickedDate = LocalDate.of(
             displayedYearMonth.getYear(), displayedYearMonth.getMonth(), dayOfMonth);
         userSelectedADate(clickedDate);
+        if (SwingUtilities.isLeftMouseButton(e)) {
+	        if (selectedDates.containsKey(clickedDate)) {
+	        	selectedDates.replace(clickedDate, new Tag(clickedDate, LocalTime.MIN, LocalTime.MAX));
+	        }
+	        else {
+	        	selectedDates.put(clickedDate, new Tag(clickedDate, LocalTime.MIN, LocalTime.MAX));
+	        }
+        }
+        else if(SwingUtilities.isRightMouseButton(e)){
+        	if (selectedDates.containsKey(clickedDate)) {
+	        	selectedDates.remove(clickedDate, new Tag(clickedDate, LocalTime.MIN, LocalTime.MAX));
+	        }
+        }
     }
 
     /**
@@ -745,7 +791,13 @@ public class CalendarPanel extends JPanel {
                         colorText = highlightInfo.colorText;
                     }
                     // Set the highlight and background colors for the label.
-                    dateLabel.setBackground(colorBackground);
+                    if (selectedDates.containsKey(currentDate) && !currentDate.equals(displayedSelectedDate)) {
+                    	dateLabel.setBackground(Color.red);
+                    }
+                    else {
+                    	dateLabel.setBackground(colorBackground);
+                    }
+                    
                     dateLabel.setForeground(colorText);
                     // If needed, set the highlight tooltip text.
                     if (highlightInfo.tooltipText != null

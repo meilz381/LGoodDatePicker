@@ -56,9 +56,6 @@ public class CalendarPanel extends JPanel {
 		public LocalDate getTag() {
 			return tag;
 		}
-		public void setTag(LocalDate tag) {
-			this.tag = tag;
-		}
 		public LocalTime getZeit_1() {
 			return Zeit_1;
 		}
@@ -74,8 +71,38 @@ public class CalendarPanel extends JPanel {
 	}
 	
 	private HashMap<LocalDate,Tag> selectedDates = new HashMap<>();
+	
 
-    /**
+    public HashMap<LocalDate, Tag> getSelectedDates() {
+		return selectedDates;
+	}
+	
+	TimePicker timepicker1;
+	TimePicker timepicker2;
+	
+	LocalDate currentSelectedDate;
+	
+	
+	public void setTimePicker(TimePicker timePicker1, TimePicker timePicker2) {
+		timepicker1 = timePicker1;
+		timepicker2 = timePicker2;
+	}
+	
+	public void replaceTime(LocalTime time1, LocalTime time2) {
+		if (currentSelectedDate != null) {
+			selectedDates.get(currentSelectedDate).setZeit_1(time1);
+			selectedDates.get(currentSelectedDate).setZeit_2(time2);
+		}
+	}
+	
+	private static LocalDate getDateFromWeekAndYear(final Integer week, final Integer year) {
+	    LocalDate date = LocalDate.of(year, 7, 1); // safer than choosing current date
+	    date = date.with(WeekFields.ISO.weekOfWeekBasedYear(), week);
+	    date = date.with(WeekFields.ISO.dayOfWeek(), 1);
+	    return date;
+	}
+
+	/**
      * dateLabels, This holds a list of all the date labels in the calendar, including ones that
      * currently have dates or ones that are blank. This will always have exactly 42 labels. Date
      * labels are reused when the currently displayed month or year is changed. The first date label
@@ -436,6 +463,12 @@ public class CalendarPanel extends JPanel {
                 weekNumberLabelWidthInCells, weekNumberLabelHeightInCells);
             centerPanel.add(weekNumberLabel, constraints);
             weekNumberLabels.add(weekNumberLabel);
+            weekNumberLabel.addMouseListener(new MouseLiberalAdapter() {
+                @Override
+                public void mouseLiberalClick(MouseEvent e) {
+                    weekNumberLabelMousePressed(e);
+                }
+            });
         }
         setSizeOfWeekNumberLabels();
     }
@@ -464,6 +497,12 @@ public class CalendarPanel extends JPanel {
                 weekdayLabelWidthInCells, weekdayLabelHeightInCells);
             centerPanel.add(weekdayLabel, constraints);
             weekdayLabels.add(weekdayLabel);
+            weekdayLabel.addMouseListener(new MouseLiberalAdapter() {
+                @Override
+                public void mouseLiberalClick(MouseEvent e) {
+                    weekdayLabelMousePressed(e);
+                }
+            });
         }
     }
 
@@ -554,18 +593,75 @@ public class CalendarPanel extends JPanel {
         int dayOfMonth = Integer.parseInt(labelText);
         LocalDate clickedDate = LocalDate.of(
             displayedYearMonth.getYear(), displayedYearMonth.getMonth(), dayOfMonth);
+        currentSelectedDate = clickedDate;
         userSelectedADate(clickedDate);
         if (SwingUtilities.isLeftMouseButton(e)) {
 	        if (selectedDates.containsKey(clickedDate)) {
-	        	selectedDates.replace(clickedDate, new Tag(clickedDate, LocalTime.MIN, LocalTime.MAX));
+	        	timepicker1.setTime(selectedDates.get(clickedDate).getZeit_1());
+	        	timepicker2.setTime(selectedDates.get(clickedDate).getZeit_2());;
 	        }
 	        else {
-	        	selectedDates.put(clickedDate, new Tag(clickedDate, LocalTime.MIN, LocalTime.MAX));
+	        	selectedDates.put(clickedDate, new Tag(clickedDate, timepicker1.getTime(), timepicker2.getTime()));
 	        }
         }
         else if(SwingUtilities.isRightMouseButton(e)){
         	if (selectedDates.containsKey(clickedDate)) {
-	        	selectedDates.remove(clickedDate, new Tag(clickedDate, LocalTime.MIN, LocalTime.MAX));
+	        	selectedDates.remove(clickedDate);
+	        }
+        }
+    }
+    
+    private void weekdayLabelMousePressed(MouseEvent e) {
+    	if (SwingUtilities.isLeftMouseButton(e)) {
+	        // Get the label that was clicked.
+	        JLabel label = (JLabel) e.getSource();
+	        // If the label is empty, do nothing and return.
+	        String labelText = label.getText();
+	        if ("".equals(labelText)) {
+	            return;
+	        }
+	        
+	        DayOfWeek weekDay = DayOfWeek.valueOf(labelText);
+	        LocalDate startDate = displayedYearMonth.atDay(1);
+	        ArrayList<LocalDate> weekDays = new ArrayList<>();
+	        boolean reachedWeekDay = false;
+	        while (startDate.isBefore(displayedYearMonth.atEndOfMonth())) {
+	            if ( startDate.getDayOfWeek() == weekDay){
+	            	weekDays.add(startDate);
+	                reachedWeekDay = true;
+	            }
+	            if (reachedWeekDay){
+	                startDate = startDate.plusWeeks(1);
+	            } else {
+	                startDate = startDate.plusDays(1);
+	            }
+	        }
+        
+        	for (LocalDate day : weekDays) {
+	    		 if (!selectedDates.containsKey(day)) {
+	    			 selectedDates.put(day, new Tag(day, timepicker1.getTime(), timepicker2.getTime()));
+	    		}
+        	}
+        }
+    }
+    
+    private void weekNumberLabelMousePressed(MouseEvent e) {
+    	if (SwingUtilities.isLeftMouseButton(e)) {
+	    	 // Get the label that was clicked.
+	        JLabel label = (JLabel) e.getSource();
+	        // If the label is empty, do nothing and return.
+	        String labelText = label.getText();
+	        if ("".equals(labelText)) {
+	            return;
+	        }
+	        
+	        int weekNumber = Integer.valueOf(labelText);
+	        LocalDate startDate = getDateFromWeekAndYear(weekNumber, displayedYearMonth.getYear());
+	        while (startDate.isBefore(startDate.plusDays(7))) {
+	            startDate = startDate.plusDays(1);
+	            if (!selectedDates.containsKey(startDate)) {
+	    			 selectedDates.put(startDate, new Tag(startDate, timepicker1.getTime(), timepicker2.getTime()));
+	    		}   
 	        }
         }
     }

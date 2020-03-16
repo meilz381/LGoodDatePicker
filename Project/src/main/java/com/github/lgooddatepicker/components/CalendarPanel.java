@@ -42,34 +42,6 @@ import com.github.lgooddatepicker.zinternaltools.YearMonthChangeEvent;
  */
 public class CalendarPanel extends JPanel {
 	
-	private class Tag{
-		private LocalDate tag;
-		private LocalTime Zeit_1;
-		private LocalTime Zeit_2;
-
-		public Tag(LocalDate tag, LocalTime zeit_1, LocalTime zeit_2) {
-			super();
-			this.tag = tag;
-			Zeit_1 = zeit_1;
-			Zeit_2 = zeit_2;
-		}
-		public LocalDate getTag() {
-			return tag;
-		}
-		public LocalTime getZeit_1() {
-			return Zeit_1;
-		}
-		public void setZeit_1(LocalTime zeit_1) {
-			Zeit_1 = zeit_1;
-		}
-		public LocalTime getZeit_2() {
-			return Zeit_2;
-		}
-		public void setZeit_2(LocalTime zeit_2) {
-			Zeit_2 = zeit_2;
-		}
-	}
-	
 	private HashMap<LocalDate,Tag> selectedDates = new HashMap<>();
 	
 
@@ -621,7 +593,33 @@ public class CalendarPanel extends JPanel {
 	            return;
 	        }
 	        
-	        DayOfWeek weekDay = DayOfWeek.valueOf(labelText);
+	        DayOfWeek weekDay;
+	        switch(labelText) {
+	        	case "Mo.":
+	        		weekDay = DayOfWeek.MONDAY;
+	        		break;
+	        	case "Di.":
+	        		weekDay = DayOfWeek.TUESDAY;
+	        		break;
+	        	case "Mi.":
+	        		weekDay = DayOfWeek.WEDNESDAY;
+	        		break;
+	        	case "Do.":
+	        		weekDay = DayOfWeek.THURSDAY;
+	        		break;
+	        	case "Fr.":
+	        		weekDay = DayOfWeek.FRIDAY;
+	        		break;
+	        	case "Sa.":
+	        		weekDay = DayOfWeek.SATURDAY;
+	        		break;
+	        	case "So.":
+	        		weekDay = DayOfWeek.SUNDAY;
+	        		break;
+	        	default:
+	        		weekDay = DayOfWeek.MONDAY;
+	        }
+
 	        LocalDate startDate = displayedYearMonth.atDay(1);
 	        ArrayList<LocalDate> weekDays = new ArrayList<>();
 	        boolean reachedWeekDay = false;

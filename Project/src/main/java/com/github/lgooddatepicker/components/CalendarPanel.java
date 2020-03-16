@@ -655,10 +655,11 @@ public class CalendarPanel extends JPanel {
 	        
 	        int weekNumber = Integer.valueOf(labelText);
 	        LocalDate startDate = getDateFromWeekAndYear(weekNumber, displayedYearMonth.getYear());
-	        while (startDate.isBefore(startDate.plusDays(7))) {
-	            startDate = startDate.plusDays(1);
-	            if (!selectedDates.containsKey(startDate)) {
-	    			 selectedDates.put(startDate, new Tag(startDate, timepicker1.getTime(), timepicker2.getTime()));
+	        LocalDate weekDay = startDate;
+	        while (weekDay.isBefore(startDate.plusDays(7))) {
+	        	weekDay = weekDay.plusDays(1);
+	            if (!selectedDates.containsKey(weekDay)) {
+	    			 selectedDates.put(weekDay, new Tag(weekDay, timepicker1.getTime(), timepicker2.getTime()));
 	    		}   
 	        }
         }

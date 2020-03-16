@@ -570,7 +570,10 @@ public class CalendarPanel extends JPanel {
         if (SwingUtilities.isLeftMouseButton(e)) {
 	        if (selectedDates.containsKey(clickedDate)) {
 	        	timepicker1.setTime(selectedDates.get(clickedDate).getZeit_1());
-	        	timepicker2.setTime(selectedDates.get(clickedDate).getZeit_2());;
+	        	timepicker1.setText(selectedDates.get(clickedDate).getZeit_1().toString());
+	        	timepicker2.setTime(selectedDates.get(clickedDate).getZeit_2());
+	        	timepicker2.setText(selectedDates.get(clickedDate).getZeit_2().toString());
+	        	
 	        }
 	        else {
 	        	selectedDates.put(clickedDate, new Tag(clickedDate, timepicker1.getTime(), timepicker2.getTime()));
@@ -886,13 +889,12 @@ public class CalendarPanel extends JPanel {
                         colorText = highlightInfo.colorText;
                     }
                     // Set the highlight and background colors for the label.
-                    if (selectedDates.containsKey(currentDate) && !currentDate.equals(displayedSelectedDate)) {
+                    //&& !currentDate.equals(displayedSelectedDate)
+                    if (selectedDates.containsKey(currentDate) ) {
                     	dateLabel.setBackground(Color.red);
-                    	System.out.println("1");
                     }
                     else {
                     	dateLabel.setBackground(colorBackground);
-                    	System.out.println("2");
                     }
                     
                     dateLabel.setForeground(colorText);

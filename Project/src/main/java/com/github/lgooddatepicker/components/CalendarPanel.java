@@ -880,11 +880,10 @@ public class CalendarPanel extends JPanel {
                     // Set the highlight and background colors for the label.
                     //&& !currentDate.equals(displayedSelectedDate)
                     if (selectedDates.containsKey(currentDate) ) {
-                    	dateLabel.setBackground(Color.red);
-                    	this.setBackground(Color.blue);
+                    	dateLabel.setBackground(Color.RED);
                     }
                     else {
-                    	dateLabel.setBackground(colorBackground);
+                    	dateLabel.setBackground(Color.BLUE);
                     }
                     
                     dateLabel.setForeground(colorText);

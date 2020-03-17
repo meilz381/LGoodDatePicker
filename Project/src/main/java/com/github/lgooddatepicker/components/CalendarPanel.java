@@ -649,7 +649,7 @@ public class CalendarPanel extends JPanel {
 	        int weekNumber = Integer.valueOf(labelText);
 	        LocalDate startDate = getDateFromWeekAndYear(weekNumber, displayedYearMonth.getYear());
 	        LocalDate weekDay = startDate;
-	        while (weekDay.isBefore(startDate.plusDays(7))) {
+	        while (weekDay.isBefore(startDate.plusDays(5))) {
 	            if (!selectedDates.containsKey(weekDay)) {
 	    			 selectedDates.put(weekDay, new Tag(weekDay, timepicker1State, timepicker2State));
 	    		}
@@ -872,7 +872,7 @@ public class CalendarPanel extends JPanel {
                 	dateLabel.setBackground(Color.RED);
                 }
                 else {
-                	dateLabel.setBackground(settings.getColor(DateArea.CalendarDefaultBackgroundHighlightedDates));
+                	dateLabel.setBackground((Color.white));
                 }
                 
                 if ((!dateIsVetoed) && (highlightInfo != null)) {

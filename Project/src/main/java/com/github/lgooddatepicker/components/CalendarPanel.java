@@ -633,6 +633,7 @@ public class CalendarPanel extends JPanel {
 	    		}
         	}
         }
+    	drawCalendar();
     }
     
     private void weekNumberLabelMousePressed(MouseEvent e) {
@@ -649,12 +650,13 @@ public class CalendarPanel extends JPanel {
 	        LocalDate startDate = getDateFromWeekAndYear(weekNumber, displayedYearMonth.getYear());
 	        LocalDate weekDay = startDate;
 	        while (weekDay.isBefore(startDate.plusDays(7))) {
-	        	weekDay = weekDay.plusDays(1);
 	            if (!selectedDates.containsKey(weekDay)) {
 	    			 selectedDates.put(weekDay, new Tag(weekDay, timepicker1State, timepicker2State));
-	    		}   
+	    		}
+	            weekDay = weekDay.plusDays(1);
 	        }
         }
+    	drawCalendar();
     }
 
     /**

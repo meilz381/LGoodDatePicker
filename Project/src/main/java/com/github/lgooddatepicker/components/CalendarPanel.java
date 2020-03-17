@@ -42,12 +42,21 @@ import com.github.lgooddatepicker.zinternaltools.YearMonthChangeEvent;
  */
 public class CalendarPanel extends JPanel {
 	
-	private HashMap<LocalDate,Tag> selectedDates = new HashMap<>();
+	private HashMap<LocalDate,Tag> selectedDates = null; 
 	
 	LocalTime timepicker1State = LocalTime.MIN;
 	LocalTime timepicker2State = LocalTime.MAX;
 	
-    public HashMap<LocalDate, Tag> getSelectedDates() {
+	Boolean firstSelection = false;
+	
+	
+	
+    public void setSelectedDates(HashMap<LocalDate, Tag> selectedDates) {
+		this.selectedDates = selectedDates;
+		drawCalendar();
+	}
+
+	public HashMap<LocalDate, Tag> getSelectedDates() {
 		return selectedDates;
 	}
 
@@ -69,6 +78,12 @@ public class CalendarPanel extends JPanel {
 		timepicker1State = timepicker1state;
 		timepicker2State = timepicker2state;
 	}
+	
+
+	public Boolean getFirstSelection() {
+		return firstSelection;
+	}
+
 
 	/**
      * dateLabels, This holds a list of all the date labels in the calendar, including ones that
@@ -317,6 +332,7 @@ public class CalendarPanel extends JPanel {
         addBorderLabels();
         // Save and apply the supplied settings.
         setSettings(datePickerSettings);
+        selectedDates = new HashMap<>();
     }
 
     /**
@@ -550,6 +566,7 @@ public class CalendarPanel extends JPanel {
      * the calendar. This sets the date picker to the selected date, and closes the calendar panel.
      */
     private void dateLabelMousePressed(MouseEvent e) {
+    	firstSelection = true;
         // Get the label that was clicked.
         JLabel label = (JLabel) e.getSource();
         // If the label is empty, do nothing and return.
@@ -576,6 +593,7 @@ public class CalendarPanel extends JPanel {
     }
     
     private void weekdayLabelMousePressed(MouseEvent e) {
+    	firstSelection = true;
     	if (SwingUtilities.isLeftMouseButton(e)) {
 	        // Get the label that was clicked.
 	        JLabel label = (JLabel) e.getSource();
@@ -637,6 +655,7 @@ public class CalendarPanel extends JPanel {
     }
     
     private void weekNumberLabelMousePressed(MouseEvent e) {
+    	firstSelection = true;
     	if (SwingUtilities.isLeftMouseButton(e)) {
 	    	 // Get the label that was clicked.
 	        JLabel label = (JLabel) e.getSource();

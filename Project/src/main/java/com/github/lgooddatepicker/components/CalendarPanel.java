@@ -870,7 +870,7 @@ public class CalendarPanel extends JPanel {
                 	dateLabel.setBackground(Color.RED);
                 }
                 else {
-                	dateLabel.setBackground(Color.BLUE);
+                	dateLabel.setBackground(settings.getColor(DateArea.CalendarDefaultBackgroundHighlightedDates));
                 }
                 
                 if ((!dateIsVetoed) && (highlightInfo != null)) {
@@ -910,7 +910,7 @@ public class CalendarPanel extends JPanel {
         }
         // If needed, change the color of the selected date.
         if (selectedDateLabel != null) {
-            selectedDateLabel.setBackground(settings.getColor(DateArea.CalendarBackgroundSelectedDate));
+           // selectedDateLabel.setBackground(settings.getColor(DateArea.CalendarBackgroundSelectedDate));
             selectedDateLabel.setBorder(new LineBorder(
                 settings.getColor(DateArea.CalendarBorderSelectedDate)));
         }

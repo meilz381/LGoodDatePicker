@@ -44,26 +44,17 @@ public class CalendarPanel extends JPanel {
 	
 	private HashMap<LocalDate,Tag> selectedDates = new HashMap<>();
 	
-
+	LocalTime timepicker1State = LocalTime.MIN;
+	LocalTime timepicker2State = LocalTime.MAX;
+	
     public HashMap<LocalDate, Tag> getSelectedDates() {
 		return selectedDates;
 	}
-	
-	TimePicker timepicker1;
-	TimePicker timepicker2;
-	
-	LocalDate currentSelectedDate;
-	
-	
-	public void setTimePicker(TimePicker timePicker1, TimePicker timePicker2) {
-		timepicker1 = timePicker1;
-		timepicker2 = timePicker2;
-	}
-	
+
 	public void replaceTime(LocalTime time1, LocalTime time2) {
-		if (currentSelectedDate != null) {
-			selectedDates.get(currentSelectedDate).setZeit_1(time1);
-			selectedDates.get(currentSelectedDate).setZeit_2(time2);
+		if (getSelectedDate() != null) {
+			selectedDates.get(getSelectedDate()).setZeit_1(time1);
+			selectedDates.get(getSelectedDate()).setZeit_2(time2);
 		}
 	}
 	
@@ -72,6 +63,11 @@ public class CalendarPanel extends JPanel {
 	    date = date.with(WeekFields.ISO.weekOfWeekBasedYear(), week);
 	    date = date.with(WeekFields.ISO.dayOfWeek(), 1);
 	    return date;
+	}
+	
+	public void setTimePickerStates(LocalTime timepicker1state, LocalTime timepicker2state) {
+		timepicker1State = timepicker1state;
+		timepicker2State = timepicker2state;
 	}
 
 	/**
@@ -565,18 +561,10 @@ public class CalendarPanel extends JPanel {
         int dayOfMonth = Integer.parseInt(labelText);
         LocalDate clickedDate = LocalDate.of(
             displayedYearMonth.getYear(), displayedYearMonth.getMonth(), dayOfMonth);
-        currentSelectedDate = clickedDate;
         userSelectedADate(clickedDate);
         if (SwingUtilities.isLeftMouseButton(e)) {
-	        if (selectedDates.containsKey(clickedDate)) {
-	        	timepicker1.setTime(selectedDates.get(clickedDate).getZeit_1());
-	        	timepicker1.setText(selectedDates.get(clickedDate).getZeit_1().toString());
-	        	timepicker2.setTime(selectedDates.get(clickedDate).getZeit_2());
-	        	timepicker2.setText(selectedDates.get(clickedDate).getZeit_2().toString());
-	        	
-	        }
-	        else {
-	        	selectedDates.put(clickedDate, new Tag(clickedDate, timepicker1.getTime(), timepicker2.getTime()));
+	        if (!selectedDates.containsKey(clickedDate)) {
+	        	selectedDates.put(clickedDate, new Tag(clickedDate, timepicker1State, timepicker2State));
 	        }
         }
         else if(SwingUtilities.isRightMouseButton(e)){
@@ -584,6 +572,7 @@ public class CalendarPanel extends JPanel {
 	        	selectedDates.remove(clickedDate);
 	        }
         }
+        drawCalendar();
     }
     
     private void weekdayLabelMousePressed(MouseEvent e) {
@@ -640,7 +629,7 @@ public class CalendarPanel extends JPanel {
         
         	for (LocalDate day : weekDays) {
 	    		 if (!selectedDates.containsKey(day)) {
-	    			 selectedDates.put(day, new Tag(day, timepicker1.getTime(), timepicker2.getTime()));
+	    			 selectedDates.put(day, new Tag(day, timepicker1State, timepicker2State));
 	    		}
         	}
         }
@@ -662,7 +651,7 @@ public class CalendarPanel extends JPanel {
 	        while (weekDay.isBefore(startDate.plusDays(7))) {
 	        	weekDay = weekDay.plusDays(1);
 	            if (!selectedDates.containsKey(weekDay)) {
-	    			 selectedDates.put(weekDay, new Tag(weekDay, timepicker1.getTime(), timepicker2.getTime()));
+	    			 selectedDates.put(weekDay, new Tag(weekDay, timepicker1State, timepicker2State));
 	    		}   
 	        }
         }
@@ -892,6 +881,7 @@ public class CalendarPanel extends JPanel {
                     //&& !currentDate.equals(displayedSelectedDate)
                     if (selectedDates.containsKey(currentDate) ) {
                     	dateLabel.setBackground(Color.red);
+                    	this.setBackground(Color.blue);
                     }
                     else {
                     	dateLabel.setBackground(colorBackground);

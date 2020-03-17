@@ -290,6 +290,7 @@ public class CalendarPanel extends JPanel {
      */
     private CalendarPanel(DatePickerSettings datePickerSettings,
         boolean isIndependentCalendarPanelInstance) {
+        selectedDates = new HashMap<>();
         // Save the information of whether this is an independent calendar panel.
         this.isIndependentCalendarPanel = isIndependentCalendarPanelInstance;
         // Call the JFormDesigner managed initialization function.
@@ -332,7 +333,6 @@ public class CalendarPanel extends JPanel {
         addBorderLabels();
         // Save and apply the supplied settings.
         setSettings(datePickerSettings);
-        selectedDates = new HashMap<>();
     }
 
     /**
